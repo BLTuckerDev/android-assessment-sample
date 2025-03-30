@@ -1,4 +1,4 @@
-package com.cricut.androidassessment.ui.theme
+package com.cricut.androidassessment.common.theme
 
 import androidx.compose.ui.graphics.Color
 

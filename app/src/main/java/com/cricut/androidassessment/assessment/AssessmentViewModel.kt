@@ -1,4 +1,4 @@
-package com.cricut.androidassessment.ui
+package com.cricut.androidassessment.assessment
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
