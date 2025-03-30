@@ -1,8 +1,12 @@
 package com.cricut.androidassessment.assessment
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -143,36 +147,61 @@ private fun AssessmentScreenContent(
                 .padding(vertical = 16.dp)
         )
 
-        Box(
+        AnimatedContent(
             modifier = Modifier
                 .weight(1f)
-                .fillMaxWidth()
-        ) {
-            model.currentQuestion?.let { question ->
-                when (question) {
-                    is Question.TrueFalse -> {
-                        val selectedAnswer = model.getCurrentAnswer() as? Boolean
+                .fillMaxWidth(),
+            targetState = model.currentQuestionIndex,
+            transitionSpec = {
+                val slideDirection = if (targetState > initialState) {
+                    AnimatedContentTransitionScope.SlideDirection.Left
+                } else {
+                    AnimatedContentTransitionScope.SlideDirection.Right
+                }
 
-                        TrueFalseQuestionItem(
-                            questionText = question.text,
-                            selectedAnswer = selectedAnswer,
-                            onAnswerSelected = actions.onTrueFalseAnswerSelected
-                        )
-                    }
+                slideIntoContainer(
+                    towards = slideDirection,
+                    animationSpec = tween(durationMillis = 300)
+                ) togetherWith slideOutOfContainer(
+                    towards = slideDirection,
+                    animationSpec = tween(durationMillis = 300)
+                ) using SizeTransform(clip = false)
+            },
+            label = "question_horizontal_slide_transition"
+        ) { questionIndex ->
 
-                    is Question.MultipleChoice -> {
-                        val selectedOptionIndex = model.getCurrentAnswer() as? Int
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                model.questions.getOrNull(questionIndex)?.let { question ->
+                    when (question) {
+                        is Question.TrueFalse -> {
+                            val selectedAnswer = model.getCurrentAnswer() as? Boolean
 
-                        MultipleChoiceQuestionItem(
-                            questionText = question.text,
-                            options = question.options,
-                            selectedOptionIndex = selectedOptionIndex,
-                            onOptionSelected = actions.onMultipleChoiceAnswerSelected
-                        )
+                            TrueFalseQuestionItem(
+                                questionText = question.text,
+                                selectedAnswer = selectedAnswer,
+                                onAnswerSelected = actions.onTrueFalseAnswerSelected
+                            )
+                        }
+
+                        is Question.MultipleChoice -> {
+                            val selectedOptionIndex = model.getCurrentAnswer() as? Int
+
+                            MultipleChoiceQuestionItem(
+                                questionText = question.text,
+                                options = question.options,
+                                selectedOptionIndex = selectedOptionIndex,
+                                onOptionSelected = actions.onMultipleChoiceAnswerSelected
+                            )
+                        }
                     }
                 }
             }
         }
+
+
 
         Row(
             modifier = Modifier
