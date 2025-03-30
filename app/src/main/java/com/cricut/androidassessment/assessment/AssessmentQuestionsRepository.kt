@@ -29,7 +29,18 @@ class AssessmentQuestionsRepository @Inject constructor() {
 
     suspend fun loadAssessmentQuestions(): List<Question> {
         delay(3_000)
-        return ASSESSMENT_QUESTIONS.shuffled()
+        val trueFalseQuestions = ASSESSMENT_QUESTIONS
+            .filterIsInstance<Question.TrueFalse>()
+            .shuffled()
+
+        val multipleChoiceQuestions = ASSESSMENT_QUESTIONS
+            .filterIsInstance<Question.MultipleChoice>()
+            .shuffled()
+
+        return listOf(
+            trueFalseQuestions.first(),
+            multipleChoiceQuestions.first()
+        )
     }
 
     companion object {
