@@ -1,13 +1,35 @@
 package com.cricut.androidassessment.assessment
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
 import com.cricut.androidassessment.common.theme.AndroidAssessmentTheme
+
+
+const val ASSESSMENT_ROUTE = "assessment"
+
+fun NavGraphBuilder.assessmentScreen() {
+    composable(ASSESSMENT_ROUTE) {
+        val viewModel = hiltViewModel<AssessmentViewModel>()
+
+        AssessmentScreen(modifier = Modifier.fillMaxSize())
+    }
+}
 
 @Composable
 fun AssessmentScreen(modifier: Modifier = Modifier) {
-    // TODO implement Compose UI
+    Box(modifier = modifier,
+        contentAlignment = Alignment.Center){
+        Text(text = "Assessment Screen", textAlign = TextAlign.Center)
+    }
 }
 
 @Preview(showBackground = true)
