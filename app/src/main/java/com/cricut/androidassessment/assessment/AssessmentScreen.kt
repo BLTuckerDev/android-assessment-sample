@@ -1,5 +1,6 @@
 package com.cricut.androidassessment.assessment
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
@@ -129,8 +130,14 @@ private fun AssessmentScreenContent(
         modifier = modifier.padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        val animatedProgress = animateFloatAsState(
+            targetValue = (model.currentQuestionIndex + 1).toFloat() / model.questions.size,
+            animationSpec = tween(durationMillis = 500),
+            label = "progress_animation"
+        )
+
         LinearProgressIndicator(
-            progress = { (model.currentQuestionIndex + 1).toFloat() / model.questions.size },
+            progress = { animatedProgress.value },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 16.dp)
