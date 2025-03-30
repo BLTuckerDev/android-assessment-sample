@@ -2,7 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt)
-    alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.detekt)
 }
 
@@ -54,43 +55,54 @@ detekt {
 
 dependencies {
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.ui)
-    implementation(libs.ui.graphics)
-    implementation(libs.ui.tooling.preview)
-    implementation(libs.material3)
+
+
+    // Compose
+    implementation(platform(libs.compose.bom))
+    implementation(libs.compose.activity)
+    implementation(libs.compose.animation)
+    implementation(libs.compose.material3)
+    implementation(libs.compose.icons.extended)
+    implementation(libs.compose.tooling.preview)
+    debugImplementation(libs.compose.tooling)
+
+
+    // Detekt
+    detektPlugins(libs.detekt.formatting)
+    detektPlugins(libs.detekt.compose)
+
 
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
-    // Detekt
-    detektPlugins(libs.detekt.formatting)
-    detektPlugins(libs.detekt.compose)
+    // Lifecycle
+    implementation(libs.lifecycle.runtime.compose)
+    implementation(libs.lifecycle.viewmodel.compose)
+    implementation(libs.lifecycle.viewmodel)
+    implementation(libs.lifecycle.savedstate)
+
+
 
     // Navigation
     implementation(libs.navigation.compose)
     implementation(libs.hilt.navigation.compose)
 
 
+    // Testing
     testImplementation(libs.junit)
-    testImplementation(libs.mockito.core)
-    testImplementation(libs.mockito.kotlin)
-    testImplementation(libs.androidx.core.testing)
-    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.arch.core.testing)
+    testImplementation(libs.lifecycle.runtime.testing)
+    testImplementation(libs.mockk)
+    testImplementation(libs.room.testing)
 
     // Testing - Android tests
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.ui.test.junit4)
-    androidTestImplementation(libs.mockito.android)
-    androidTestImplementation(libs.mockito.kotlin)
-    androidTestImplementation(libs.hilt.android.testing)
-    kspAndroidTest(libs.hilt.android.compiler)
+    androidTestImplementation(libs.junit.ext)
+    androidTestImplementation(libs.espresso)
+    androidTestImplementation(libs.arch.core.testing)
+    androidTestImplementation(platform(libs.compose.bom))
+    androidTestImplementation(libs.room.testing)
+    androidTestImplementation(libs.coroutines.test)
 
-    debugImplementation(libs.ui.tooling)
-    debugImplementation(libs.ui.test.manifest)
+    debugImplementation(libs.compose.tooling)
 }
