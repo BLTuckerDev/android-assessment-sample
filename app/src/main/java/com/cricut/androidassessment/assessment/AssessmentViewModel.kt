@@ -29,15 +29,16 @@ class AssessmentViewModel @Inject constructor(
         }
         hasStarted = true
 
+        loadQuestions()
+    }
+
+    private fun loadQuestions() {
         viewModelScope.launch {
-
-
             try{
-                assessmentQuestionsRepository.loadAssessmentQuestions()
-                //TODO implement questions and load them in
+                val questions = assessmentQuestionsRepository.loadAssessmentQuestions()
 
                 mutableModel.update {
-                    assessmentScreenModelReducer.updateModelWithQuestions(it)
+                    assessmentScreenModelReducer.updateModelWithQuestions(it, questions)
                 }
 
             }catch (e: Exception){
@@ -45,7 +46,43 @@ class AssessmentViewModel @Inject constructor(
                     assessmentScreenModelReducer.updateModelWithError(it)
                 }
             }
-
         }
     }
+
+    fun onNextQuestion() {
+        mutableModel.update {
+            assessmentScreenModelReducer.navigateToNextQuestion(it)
+        }
+    }
+
+    fun onPreviousQuestion() {
+        mutableModel.update {
+            assessmentScreenModelReducer.navigateToPreviousQuestion(it)
+        }
+    }
+
+    fun onTrueFalseAnswerSelected(answer: Boolean) {
+        latestModel.currentQuestion?.id?.let { questionId ->
+            mutableModel.update {
+                assessmentScreenModelReducer.saveAnswer(it, questionId, answer)
+            }
+        }
+    }
+
+    fun onMultipleChoiceAnswerSelected(optionIndex: Int) {
+        latestModel.currentQuestion?.id?.let { questionId ->
+            mutableModel.update {
+                assessmentScreenModelReducer.saveAnswer(it, questionId, optionIndex)
+            }
+        }
+    }
+
+    fun onAnswerSelected(answer: Any) {
+        latestModel.currentQuestion?.id?.let { questionId ->
+            mutableModel.update {
+                assessmentScreenModelReducer.saveAnswer(it, questionId, answer)
+            }
+        }
+    }
+
 }

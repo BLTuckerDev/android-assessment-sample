@@ -33,7 +33,7 @@ class AssessmentQuestionsRepository @Inject constructor() {
     }
 
     companion object {
-        private val ASSESSMENT_QUESTIONS = listOf(
+        val ASSESSMENT_QUESTIONS = listOf(
             Question.TrueFalse(
                 id = "tf1",
                 text = "Kotlin is the official language for Android development.",
