@@ -1,5 +1,7 @@
 package com.cricut.androidassessment.assessment
 
+import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,6 +29,7 @@ import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.cricut.androidassessment.assessment.composables.ConfettiAnimation
 import com.cricut.androidassessment.assessment.composables.MultipleChoiceQuestionItem
 import com.cricut.androidassessment.assessment.composables.TrueFalseQuestionItem
 import com.cricut.androidassessment.common.composables.ErrorScreen
@@ -220,41 +223,49 @@ private fun ScoreScreenContent(
     model: AssessmentScreenModel,
     actions: AssessmentScreenActions,
 ) {
-    Column(
-        modifier = modifier.padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = "Assessment Completed!",
-            style = MaterialTheme.typography.headlineMedium,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
+    Box(modifier = modifier.fillMaxSize()) {
+        ConfettiAnimation(modifier = Modifier.fillMaxSize())
 
-        Text(
-            text = "Your Score: ${model.correctlyAnsweredCount} out of ${model.questions.size}",
-            style = MaterialTheme.typography.titleLarge,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(bottom = 32.dp)
-        )
-
-        Button(
-            onClick = actions.onStartNewAssessment,
+        Column(
             modifier = Modifier
-                .fillMaxWidth(0.7f)
-                .height(56.dp),
-            shape = RoundedCornerShape(28.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary
-            )
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Start New Assessment",
-                style = MaterialTheme.typography.bodyLarge
+                text = "Assessment Completed!",
+                style = MaterialTheme.typography.headlineMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(bottom = 16.dp)
             )
+
+            Text(
+                text = "Your Score: ${model.correctlyAnsweredCount} out of ${model.questions.size}",
+                style = MaterialTheme.typography.titleLarge,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(bottom = 32.dp)
+            )
+
+            Button(
+                onClick = actions.onStartNewAssessment,
+                modifier = Modifier
+                    .fillMaxWidth(0.7f)
+                    .height(56.dp),
+                shape = RoundedCornerShape(28.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
+            ) {
+                Text(
+                    text = "Start New Assessment",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
         }
     }
+
+
 }
 
 @Preview(showBackground = true)
