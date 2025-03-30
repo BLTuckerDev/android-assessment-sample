@@ -91,6 +91,7 @@ dependencies {
 
     // Testing
     testImplementation(libs.junit)
+    testImplementation(libs.coroutines.test)
     testImplementation(libs.arch.core.testing)
     testImplementation(libs.lifecycle.runtime.testing)
     testImplementation(libs.mockk)
