@@ -14,7 +14,12 @@ fun AssessmentNavigationGraph(navigationController: NavHostController,
         startDestination = startDestination){
 
 
-        assessmentScreen()
-
+        assessmentScreen(onStartNewAssessment = {
+            navigationController.navigate(ASSESSMENT_ROUTE){
+                popUpTo(ASSESSMENT_ROUTE){
+                    inclusive = true
+                }
+            }
+        })
     }
 }

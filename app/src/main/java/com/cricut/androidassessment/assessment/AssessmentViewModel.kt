@@ -77,12 +77,13 @@ class AssessmentViewModel @Inject constructor(
         }
     }
 
-    fun onAnswerSelected(answer: Any) {
-        latestModel.currentQuestion?.id?.let { questionId ->
-            mutableModel.update {
-                assessmentScreenModelReducer.saveAnswer(it, questionId, answer)
-            }
+    fun onFinishAssessment() {
+        if(!latestModel.canFinish){
+            return
+        }
+
+        mutableModel.update {
+            assessmentScreenModelReducer.updateModelWithCompletedAssessment(it)
         }
     }
-
 }

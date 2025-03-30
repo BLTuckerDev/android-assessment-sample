@@ -9,7 +9,8 @@ data class AssessmentScreenModel(
     val answers: Map<String, Any> = emptyMap(),
     val isLoading: Boolean,
     val isError: Boolean,
-){
+    val isCompleted: Boolean = false,
+) {
     val currentQuestion: Question?
         get() = questions.getOrNull(currentQuestionIndex)
 
@@ -19,16 +20,38 @@ data class AssessmentScreenModel(
     val canGoPrevious: Boolean
         get() = currentQuestionIndex > 0
 
+    val canFinish: Boolean
+        get() = questions.isNotEmpty() && questions.all { questionId ->
+            answers.containsKey(
+                questionId.id
+            )
+        }
+
     fun getCurrentAnswer(): Any? = currentQuestion?.let { answers[it.id] }
+
+    val correctlyAnsweredCount: Int
+        get() {
+            return questions.count { question ->
+                val userAnswer = answers[question.id]
+                when {
+                    userAnswer == null -> false
+                    question is Question.TrueFalse -> userAnswer as Boolean == question.correctAnswer
+                    question is Question.MultipleChoice -> userAnswer as Int == question.correctAnswerIndex
+                    else -> false
+                }
+            }
+        }
+
 }
 
 
 @ViewModelScoped
-class AssessmentScreenModelReducer @Inject constructor(){
+class AssessmentScreenModelReducer @Inject constructor() {
 
     fun createInitialState() = AssessmentScreenModel(isLoading = true, isError = false)
 
-    fun updateModelWithError(previousModel: AssessmentScreenModel) = previousModel.copy(isLoading = false, isError = true)
+    fun updateModelWithError(previousModel: AssessmentScreenModel) =
+        previousModel.copy(isLoading = false, isError = true)
 
     fun updateModelWithQuestions(previousModel: AssessmentScreenModel, questions: List<Question>) =
         previousModel.copy(isLoading = false, isError = false, questions = questions)
@@ -48,10 +71,18 @@ class AssessmentScreenModelReducer @Inject constructor(){
             previousModel
         }
 
-    fun saveAnswer(previousModel: AssessmentScreenModel, questionId: String, answer: Any): AssessmentScreenModel {
+    fun saveAnswer(
+        previousModel: AssessmentScreenModel,
+        questionId: String,
+        answer: Any
+    ): AssessmentScreenModel {
         val updatedAnswers = previousModel.answers.toMutableMap().apply {
             put(questionId, answer)
         }
         return previousModel.copy(answers = updatedAnswers)
+    }
+
+    fun updateModelWithCompletedAssessment(previousModel: AssessmentScreenModel): AssessmentScreenModel {
+        return previousModel.copy(isCompleted = true)
     }
 }
